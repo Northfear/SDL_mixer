@@ -1,0 +1,43 @@
+TARGET_LIB  = libSDL2_mixer.a
+COMMON_OBJS = effect_position.o \
+	effects_internal.o \
+	load_voc.o \
+	music.o \
+	music_flac.o \
+	music_mad.o \
+	music_modplug.o \
+	music_nativemidi.o \
+	music_opus.o \
+	music_wav.o \
+	playwave.o \
+	effect_stereoreverse.o \
+	load_aiff.o \
+	mixer.o \
+	music_cmd.o \
+	music_fluidsynth.o \
+	music_mikmod.o \
+	music_mpg123.o \
+	music_ogg.o \
+	music_timidity.o \
+	playmus.o
+
+PREFIX  = arm-vita-eabi
+CC      = $(PREFIX)-gcc
+AR      = $(PREFIX)-ar
+CFLAGS  = -Wl,-q -Wall -O3 -I$(VITASDK)/arm-vita-eabi/include/SDL2 -DMUSIC_OGG -DMUSIC_MOD_MIKMOD -DMUSIC_WAV -DMUSIC_MP3_MPG123 -DMUSIC_FLAC
+ASFLAGS = $(CFLAGS)
+
+LIBS    += -lSDL2
+
+$(TARGET_LIB): $(COMMON_OBJS)
+	$(AR) rcs $@ $^
+
+clean:
+	@rm -rf $(TARGET_LIB) $(COMMON_OBJS)
+
+install: $(TARGET_LIB)
+	@cp  $(TARGET_LIB) $(VITASDK)/arm-vita-eabi/lib
+	@mkdir -p "$(VITASDK)/arm-vita-eabi/include/SDL2"
+	@cp SDL_mixer.h "$(VITASDK)/arm-vita-eabi/include/SDL2"
+	@echo "Installed!"
+
